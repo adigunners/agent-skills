@@ -43,6 +43,10 @@ Learned from the trials above, and they generalise past this one skill.
 - **Declare what you truncated.** A silent cap reads as "that was everything", which is the one thing it must never mean.
 - **Publish the limits.** Every skill here documents where it is blind. A tool that hides that is worse than one that has it.
 
+## About this repo
+
+This is a **release snapshot**, not a live mirror. The skills are developed in a private repo against a production codebase and generalised on publish — incident specifics and product decisions are stripped by a script that aborts rather than publish an un-scrubbed line. Expect this copy to lag the source between releases.
+
 ## Install
 
 Each skill is a directory. Copy the one you want:
