@@ -14,14 +14,14 @@ None of that was reachable from either axis. What found it was adversarial red-t
 
 ## The squad
 
-| Role | Question it owns | May block on |
-| --- | --- | --- |
-| `standards` | Does this match how we build here? | Documented-standard breaches |
-| `spec` | Does it do what was asked — no less, no more? | Missing or wrong requirements |
-| `adversary` | Can it be broken? | Anything exploitable |
-| `operator` | Can I see it fail, and can I undo it? | Unrecoverable or invisible failure |
-| `prover` | Do the tests go red when the code is wrong? | Behaviour change no test catches |
-| `steward` | *Substitute.* Were we allowed to do this to a user? | Consent, retention, exclusion, false promises |
+| Role        | Question it owns                                    | May block on                                  |
+| ----------- | --------------------------------------------------- | --------------------------------------------- |
+| `standards` | Does this match how we build here?                  | Documented-standard breaches                  |
+| `spec`      | Does it do what was asked — no less, no more?       | Missing or wrong requirements                 |
+| `adversary` | Can it be broken?                                   | Anything exploitable                          |
+| `operator`  | Can I see it fail, and can I undo it?               | Unrecoverable or invisible failure            |
+| `prover`    | Do the tests go red when the code is wrong?         | Behaviour change no test catches              |
+| `steward`   | _Substitute._ Were we allowed to do this to a user? | Consent, retention, exclusion, false promises |
 
 `prover` is the only one that runs anything. It mutates the change and requires the suite to go red — reading a test tells you what it claims, only breaking the code tells you what it catches.
 
@@ -42,11 +42,15 @@ A section's presence in a pack is the trigger. A pack with no `adversary` sectio
 
 Three trials, because a review system that has never been measured is a ritual.
 
-**1. Known-answer recall.** Pointed at a commit whose bugs were already documented, in a fixture stripped of git history — one `git log` would have shown a commit titled *"close four holes found red-teaming the release script"*. It found **all four**, plus four nobody had found, one of which was still live in production.
+**1. Known-answer recall.** Pointed at a commit whose bugs were already documented, in a fixture stripped of git history — one `git log` would have shown a commit titled _"close four holes found red-teaming the release script"_. It found **all four**, plus four nobody had found, one of which was still live in production.
 
 **2. Merged, deployed code.** A consent-gating change that had already been reviewed and shipped. **Five confirmed defects**, including analytics contacting a third party before consent, and "turn analytics off" not turning it off. Each verified by a **different model** than the one that found it.
 
 **3. Its own pull request.** The squad reviewed the PR that introduced the squad. **Nine blocking findings**, including that the CI gate could not block a merge on that GitHub plan, and that it watched pull requests in a repo where people push directly to the protected branch. Two of the nine contradicted claims made in the PR description.
+
+**4. Real use, and it failed.** Shipped to a three-person team with a CI gate that required review on every change into a protected branch. Within a day it had blocked the first production promotion and a colleague could not merge a single small fix — _"the workflow has become very restrictive… every issue has become colossal."_
+
+That is the most useful result in this list. The first three say the reviewers find real defects; the fourth says a review system can be correct and still unusable, and that the author is the last person able to tell. I had only ever tested the gate on my own PRs — all deploy and CI changes, the one category that genuinely needs review — so it looked right to me and was intolerable for everyone else.
 
 That third result is the one worth trusting. A review system that cannot find fault with its own author is measuring agreement, not quality.
 
@@ -57,6 +61,16 @@ That third result is the one worth trusting. A review system that cannot find fa
 - **Challenge cross-model.** Reviewers sharing a model share its blind spots, so agreement between them can be one opinion wearing several shirts. In trial 2 four reviewers agreed — a different model verifying against sources they never opened is what turned that into evidence.
 - **Uncertainty defaults differ by role.** `adversary` and `steward` stand when unsure; everyone else refutes. Those two produce the findings hardest to be certain about, so a refute-on-doubt default discards exactly the most valuable ones.
 - **Declare truncation.** A silent finding cap reads as "that was everything", which is the one thing it must never mean.
+
+## If you wire this to a CI gate
+
+Most of what went wrong for us was in the gate, not the reviewers.
+
+- **Gate on risk, not on everything.** Require review where a mistake is expensive, slow to detect, or hard to reverse — and nowhere else. Exempt promotions between long-lived branches (their commits were reviewed on the way in), bot PRs (no human wrote the diff), and anything touching no risk path. We measured five of our last eight PRs needing no review at all.
+- **Derive the risk set from incidents, not categories.** Ask what happens when a path breaks, not what kind of file it is. Our first list omitted the analytics directory — the exact place a review later found five live defects that had reached real users. It also gated a design-token parser whose worst failure is a wrong colour.
+- **Backtest it.** Replay your last ~20 merged PRs through the gate with their real files and authors, and count how many it would have stopped. That found two defects in an hour that no unit test caught. Beware false signals: counting `fix:`-prefixed commits per directory looks like incident evidence and measures the commit convention instead.
+- **Always provide an override, and name it in the failure message.** A gate a competent engineer cannot get past is a gate that gets deleted, after which nothing is checked. Require a written reason so the bypass is recorded rather than prevented.
+- **A merged PR also raises a push event.** If you gate pushes to catch direct commits, ask the forge which PR a pushed commit came from — otherwise the gate fails the merge it approved seconds earlier and leaves a red mark behind every merge. Parent count misses squash merges; a `(#123)` suffix misreads hand-written subjects.
 
 ## Known limits
 

@@ -26,8 +26,9 @@ A review system nobody has measured is a ritual. Three trials:
 1. **Known-answer recall** — pointed at a commit whose bugs were already documented, in a fixture stripped of git history so it couldn't read the answer. Found **all four**, plus four nobody had found, one still live in production.
 2. **Merged, deployed code** — a consent-gating change already reviewed and shipped. **Five confirmed defects**, each verified by a *different model* than the one that found it.
 3. **Its own pull request** — **nine blocking findings**, including that the CI gate couldn't block a merge on that GitHub plan. Two of the nine contradicted claims made in the PR description.
+4. **Real use — and it failed.** The gate shipped requiring review on every change into a protected branch. Within a day it had blocked a production promotion and a colleague could not merge a single small fix.
 
-That third result is the one worth trusting. A review system that cannot find fault with its own author is measuring agreement, not quality.
+The third result says the reviewers work. **The fourth is the one to learn from:** a review system can be correct and still unusable, and its author is the last person able to tell. Every PR I had tested it on was mine, and all of them were the one category that genuinely needs review.
 
 **[Full documentation, design decisions and known limits →](five-a-side/README.md)**
 
@@ -42,6 +43,8 @@ Learned from the trials above, and they generalise past this one skill.
 - **Agreement between agents on one model is one opinion wearing several shirts.** Cross-model challenge is what turns it into evidence.
 - **Declare what you truncated.** A silent cap reads as "that was everything", which is the one thing it must never mean.
 - **Publish the limits.** Every skill here documents where it is blind. A tool that hides that is worse than one that has it.
+- **Gate on risk, not on everything — and advertise the override.** Friction has to be proportional to what a mistake costs. A gate a competent engineer cannot get past is a gate that gets deleted, after which nothing is checked at all.
+- **Backtest a policy before trusting it.** Replay recent merged work through the rule and count what it would have stopped. Cheaper than waiting for a colleague to be annoyed enough to tell you.
 
 ## About this repo
 
