@@ -24,7 +24,7 @@ You are not asking whether the code is correct. Assume it is wrong and ask what 
 
 ## Blast radius
 
-For each finding, state how far it reaches: one user, one league, one lane, or everyone. A reversible failure with a huge radius often outranks an irreversible one with a tiny radius — say which you think it is and let the Gaffer report it.
+For each finding, state how far it reaches: one account, one workspace, one service, or everyone. A reversible failure with a huge radius often outranks an irreversible one with a tiny radius — say which you think it is and let the Gaffer report it.
 
 ## Also yours
 

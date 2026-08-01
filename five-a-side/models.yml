@@ -1,0 +1,58 @@
+# Authoritative model and effort policy for the review team.
+#
+# Consumer repositories may override the model names they have access to, but
+# must keep the lane budgets and role separation intact. A caller that cannot
+# provide a required model must mark the role incomplete rather than silently
+# inheriting its own model.
+tiers:
+  top:
+    model: opus
+    effort: high
+  mid:
+    model: sonnet
+    effort: medium
+
+floor: sonnet
+
+# Deliberately unavailable for review, challenge, or fallback.
+excluded:
+  - inherit
+
+roles:
+  adversary:
+    tier: top
+    effort: high
+  operator:
+    tier: top
+    effort: high
+  prover:
+    tier: top
+    effort: medium
+  standards:
+    tier: mid
+    effort: medium
+  spec:
+    tier: mid
+    effort: medium
+  steward:
+    tier: mid
+    effort: medium
+
+invents:
+  - adversary
+  - operator
+
+optional_definitions:
+  - challenger
+
+tools:
+  required:
+    - Bash
+  write_capable:
+    - Edit
+    - Write
+    - NotebookEdit
+  may_write:
+    - prover
+  forbidden:
+    - Agent
