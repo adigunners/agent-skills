@@ -1,5 +1,8 @@
 ---
 domain: design-system
+lane: standard
+reviewers: ["standards", "spec", "prover", "steward"]
+human_ack: []
 paths:
   - "src/components/**"
   - "src/app/**/*.tsx"

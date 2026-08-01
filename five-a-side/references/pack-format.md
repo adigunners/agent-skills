@@ -9,6 +9,9 @@ Location: `.claude/five-a-side/packs/<domain>.md`, in the repo being reviewed.
 ```markdown
 ---
 domain: design-system
+lane: standard
+reviewers: ["standards", "spec", "prover", "steward"]
+human_ack: []
 paths:
   - "src/components/**"
   - "src/app/**/*.tsx"
@@ -37,6 +40,16 @@ One paragraph: what this domain is and where its source of truth lives.
 ## steward
 - Omit unless this domain touches a real person's data, consent, money or accessibility.
 ```
+
+## Frontmatter fields
+
+- `domain` must match the filename stem.
+- `lane` is `standard` or `critical`; the highest lane among matched packs wins.
+- `reviewers` is a JSON-compatible inline list of role slugs. Every listed role
+  must have a matching section below the frontmatter.
+- `human_ack` is a JSON-compatible inline list of reasons that require a named
+  human acknowledgement before the gate can pass.
+- `paths` is a non-empty list of repository-relative globs.
 
 ## Rules for writing packs
 
